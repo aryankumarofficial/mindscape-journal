@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "lib": ["ESNext"],
+    "lib": ["ESNext", "DOM"],
     "target": "ESNext",
     "module": "Preserve",
     "moduleDetection": "force",
@@ -28,6 +28,7 @@
       "@repo/llm/*": ["packages/llm/src/*"],
       "@repo/analytics/*": ["packages/analytics/src/*"],
       "@repo/types/*": ["packages/types/src/*"],
+      "@repo/email/*": ["packages/email/src/*"],
     },
   },
 }
