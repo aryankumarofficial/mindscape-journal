@@ -8,6 +8,7 @@ import {
   uuid,
   varchar,
 } from "drizzle-orm/pg-core";
+import { session } from "./session";
 
 export const users = pgTable(
   "users",
@@ -25,3 +26,7 @@ export const users = pgTable(
   ]
   )
 )
+
+export const userRelations = relations(users, ({ many }) => ({
+  sessions:many(session)
+}))

@@ -7,6 +7,7 @@ import {
   index,
 } from "drizzle-orm/pg-core";
 import { users } from "./user";
+import { relations } from "drizzle-orm";
 
 export const VerificationTypeEnum = pgEnum("verification_type", [
   "EMAIL_VERIFY",
@@ -32,4 +33,14 @@ export const verificationToken = pgTable(
     index("verification_user_idx").on(table.userId),
     index("verification_expiry_idx").on(table.expiresAt),
   ],
+);
+
+export const verificationRelations = relations(
+  verificationToken,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [verificationToken.userId],
+      references: [users.id],
+    }),
+  }),
 );

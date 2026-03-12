@@ -1,5 +1,6 @@
 import { pgTable, uuid, text, timestamp, index } from "drizzle-orm/pg-core";
 import { users } from "./user";
+import { relations } from "drizzle-orm";
 
 export const session = pgTable(
   "session",
@@ -14,3 +15,10 @@ export const session = pgTable(
   },
   (table) => [index("session_user_id_idx").on(table.userId)],
 );
+
+export const sessionRelations = relations(session, ({ one }) => ({
+  user: one(users, {
+    fields: [session.userId],
+    references: [users.id],
+  }),
+}));
