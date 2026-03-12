@@ -1,3 +1,7 @@
 export * from "./user"
 export * from "./verificationToken"
 export * from "./session"
+export * from "./ambience-sessions"
+export * from "./journal-analysis"
+export * from "./journal-entries"
+export * from "./keywords"
