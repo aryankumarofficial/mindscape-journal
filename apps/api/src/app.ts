@@ -1,11 +1,17 @@
 import express from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 
 import routes from "./routes";
 import errorMiddleware from "./middlewares/error.middleware";
 
 const app = express();
-
+app.use(cors({
+  origin: `https://localhost:3000`,
+  credentials:true
+}));
+app.use(express.json());
+app.use(cookieParser());
 app.get("/", (_, res) => {
   res.json({
     message: "API Server Running successfully",
@@ -22,8 +28,6 @@ app.get("/health", (_req, res) => {
   });
 });
 
-app.use(cors());
-app.use(express.json());
 
 app.use("/api", routes);
 

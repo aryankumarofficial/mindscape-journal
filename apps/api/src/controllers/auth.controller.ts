@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import { asyncHandler } from "../utils/asyncHandler";
 import { loginUser, registerUser } from "../services/auth.service";
+import { setAuthCookies } from "../utils/cookies";
 
 export const register = asyncHandler(async (req: Request, res: Response) => {
   const user = await registerUser(req.body);
@@ -15,6 +16,8 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
 export const login = asyncHandler(async (req: Request, res: Response) => {
   const { email, password } = req.body;
   const data = await loginUser({ email, password });
+
+  setAuthCookies(res,data.token!,data.token!)
 
   return res.json({
     success: true,
