@@ -83,6 +83,10 @@
       "name": "@repo/llm",
       "version": "0.0.1",
     },
+    "packages/types": {
+      "name": "@repo/types",
+      "version": "0.0.1",
+    },
   },
   "trustedDependencies": [
     "sharp",
@@ -358,6 +362,8 @@
     "@repo/email": ["@repo/email@workspace:packages/email"],
 
     "@repo/llm": ["@repo/llm@workspace:packages/llm"],
+
+    "@repo/types": ["@repo/types@workspace:packages/types"],
 
     "@repo/web": ["@repo/web@workspace:apps/web"],
 
