@@ -1,2 +1,3 @@
 export * from "./email/payload"
-export * from "./db/index"
+export * from "./db"
+export * from "./user"
