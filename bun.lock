@@ -47,6 +47,10 @@
         "typescript": "^5",
       },
     },
+    "packages/llm": {
+      "name": "@repo/llm",
+      "version": "0.0.1",
+    },
   },
   "trustedDependencies": [
     "sharp",
@@ -262,6 +266,8 @@
     "@nolyfill/is-core-module": ["@nolyfill/is-core-module@1.0.39", "", {}, "sha512-nn5ozdjYQpUCZlWGuxcJY/KpxkWQs4DcbMCmKojjyrYDEAGy4Ce19NN4v5MduafTwJlbKc99UA8YhSVqq9yPZA=="],
 
     "@repo/api": ["@repo/api@workspace:apps/api"],
+
+    "@repo/llm": ["@repo/llm@workspace:packages/llm"],
 
     "@repo/web": ["@repo/web@workspace:apps/web"],
 
