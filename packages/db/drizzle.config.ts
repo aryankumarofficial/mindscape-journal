@@ -5,7 +5,7 @@ if (!databaseConnectionString) {
   throw new Error(`DATABASE_URL must be set for this operation!`);
 }
 export default defineConfig({
-  out: './drizzle',
+  out: './.drizzle',
   dialect: 'postgresql',
   schema: ['./src/schema'],
   migrations: {

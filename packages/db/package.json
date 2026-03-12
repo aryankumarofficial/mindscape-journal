@@ -10,5 +10,14 @@
   "devDependencies": {
     "drizzle-kit": "^0.31.9",
     "tsx": "^4.21.0"
+  },
+  "scripts": {
+    "dev": "next dev",
+       "db:generate": "bunx drizzle-kit generate",
+       "db:migrate": "bunx drizzle-kit migrate",
+       "db:push": "bunx drizzle-kit push",
+       "db:pull": "bunx drizzle-kit pull",
+       "db:up": "bunx drizzle-kit up",
+       "db:studio": "bunx drizzle-kit studio"
   }
 }
