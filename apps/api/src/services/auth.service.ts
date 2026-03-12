@@ -47,8 +47,15 @@ export async function loginUser({ email, password }: LoginUserPayload) {
 
 const [session]  = await createLoginSession(user.id);
 
+  const accessToken = signToken({
+  id: user.id,
+})
 
-  return {user:generateSafeUser(user),token:session?.token}
+  return {
+    user: generateSafeUser(user),
+    accessToken,
+    refreshToken:session?.token
+  }
 
 
 }

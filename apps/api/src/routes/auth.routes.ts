@@ -10,8 +10,8 @@ router.post("/register", validate(registerSchema), register);
 
 router.post("/login", validate(loginSchema), login);
 
-router.post("/logout",  logout);
-router.post("/refresh", authMiddleware, refresh);
+router.post("/logout", authMiddleware, logout);
+router.post("/refresh",  refresh);
 
 
 export default router;
