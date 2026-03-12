@@ -5,6 +5,8 @@ import AppError from "../utils/appError";
 import { comparePassword, hashPassword } from "../utils/hash";
 import { signToken } from "../utils/jwt";
 import { createLoginSession } from "../repositories/session.repo";
+import type { SafeUser } from "@repo/types/db";
+import { generateSafeUser } from "../utils/user";
 export async function registerUser(data: RegisterUserPayload) {
   const existingUser = await findUserByEmail(data.email)
   if (existingUser) {
@@ -38,10 +40,15 @@ export async function loginUser({ email, password }: LoginUserPayload) {
     throw new AppError(`Invalid Credentials`,401)
   }
 
+  if (!user.isVerified) {
+    throw new AppError(`Verify Your account to access the Platform`,403)
+  }
+
+
 const [session]  = await createLoginSession(user.id);
 
 
-  return {user,token:session?.token}
+  return {user:generateSafeUser(user),token:session?.token}
 
 
 }
