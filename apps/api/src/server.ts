@@ -1,11 +1,13 @@
-import express from "express";
+import dotenv from "dotenv";
+import path from "path";
 
-const app = express();
+dotenv.config({
+  path: path.resolve(process.cwd(), ".env"),
+});
 
-app.use(express.json());
+import app from "./app";
 
-const port = process.env.PORT
-
+const port = process.env.PORT;
 
 const server = app.listen(port, () => {
   const address = server.address();

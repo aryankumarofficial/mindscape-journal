@@ -1,30 +1,33 @@
-import { neon } from '@neondatabase/serverless';
-import { drizzle } from 'drizzle-orm/neon-http';
+import dotenv from "dotenv";
+import path from "path";
+
+dotenv.config({
+  path: path.resolve(process.cwd(), "../../.env"),
+});
+
+import { Pool } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-serverless';
 import * as  schema from "./schema"
 const databaseConnectionString = process.env.DATABASE_URL;
 
 
 if (!databaseConnectionString) {
-  throw new Error(`DATABSE_URL is required!`);
+  throw new Error(`DATABASE_URL is required! : ${databaseConnectionString}`,);
 }
 
-declare global {
-  var postgreSqlClient: ReturnType<typeof neon> | undefined;
-}
-
-let postgreSqlClient;
-
-if (process.env.NODE_ENV !== "production") {
-  if (!global.postgreSqlClient) {
-      global.postgreSqlClient = neon(databaseConnectionString)
-  }
-  postgreSqlClient = global.postgreSqlClient
-} else {
-  postgreSqlClient = neon(databaseConnectionString)
-}
-
-export const db = drizzle(postgreSqlClient, {
-  schema: {
-    ...schema
-  }
+const pool = new Pool({
+  connectionString: databaseConnectionString,
 })
+
+export const db = drizzle(pool, {
+  schema,
+  logger: process.env.NODE_ENV!=="production"? {
+    logQuery(query, params) {
+      console.log("\n🟦 DRIZZLE QUERY");
+      console.log("SQL:", query);
+      console.log("PARAMS:", params);
+    }
+  }:false
+})
+
+export * from "./schema"

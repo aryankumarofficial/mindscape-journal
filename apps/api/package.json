@@ -4,7 +4,8 @@
   "type": "module",
   "version": "0.0.0",
   "scripts": {
-    "dev": "bun --watch src/server.ts"
+    "dev": "bun --env-file=../../.env --watch src/server.ts",
+    "start": "bun src/server.ts"
   },
   "dependencies": {
     "@types/cors": "^2.8.19",

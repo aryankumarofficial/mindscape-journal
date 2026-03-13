@@ -25,7 +25,7 @@ export async function registerUser(data: RegisterUserPayload) {
     verificationUrl:`http://localhost:5000/verify/${rowToken}`
   })
 
-  return user;
+  return generateSafeUser(user);
 }
 
 export async function loginUser({ email, password }: LoginUserPayload) {

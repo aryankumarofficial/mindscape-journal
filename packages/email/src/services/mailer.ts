@@ -12,7 +12,7 @@ export async function sendVerifyEmail({
 }: SendVerifyEmailPayload) {
   const html = await render(VerifyEmail({ username, verificationUrl }));
   return transporter.sendMail({
-    from: `"Mindscape" <${process.env.SMTP_HOST}>`,
+    from: `"Mindscape" <${process.env.SMTP_USER}>`,
     to,
     subject: `Verify your Mindscape account`,
     html
@@ -26,7 +26,7 @@ export async function sendWelcomeEmail({
   const html = await render(WelcomeEmail({ username }));
 
   return transporter.sendMail({
-    from: `"Mindscape" <${process.env.SMTP_HOST}>`,
+    from: `"Mindscape" <${process.env.SMTP_USER}>`,
     to,
     subject: `Welcome to Mindscape 🎉`,
     html
@@ -42,7 +42,7 @@ export async function sendResetPasswordEmail({
   const html = await render(ForgetPasswordEmail({ resetUrl, username }));
 
   return transporter.sendMail({
-    from: `"Mindscape" <${process.env.SMTP_HOST}>`,
+    from: `"Mindscape" <${process.env.SMTP_USER}>`,
     to,
     subject: `Reset your password`,
     html
