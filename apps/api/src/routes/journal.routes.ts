@@ -4,7 +4,7 @@ import { createJournalSchema } from "../validators/journals/entries.schema";
 import { create } from "../controllers/journal/entries.controller";
 import { getJournals } from "../services/journal/entries.service";
 import { textAnalyzeSchema } from "../validators/journals/analyzer.schema";
-import { analyze } from "../controllers/journal/analyze.controller";
+import { analyze, textHistory } from "../controllers/journal/analyze.controller";
 const router = Router();
 
 router.post("/", validate(createJournalSchema), create);
@@ -12,6 +12,7 @@ router.post("/", validate(createJournalSchema), create);
 router.get("/:userId", getJournals);
 
 router.post("/analyze", validate(textAnalyzeSchema), analyze);
+router.get("/analyze", textHistory);
 
 
 export default router;

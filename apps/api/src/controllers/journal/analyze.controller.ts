@@ -1,13 +1,13 @@
 import type { Request, Response } from "express";
 import { asyncHandler } from "../../utils/asyncHandler";
-import { getEmotionSummery } from "../../services/journal/analysis.service";
+import { getEmotionSummery, getTextAnalysisHistory } from "../../services/journal/analysis.service";
 
 export const analyze = asyncHandler(async (req: Request, res: Response) => {
 
   const { text } = req.body;
   const response = await getEmotionSummery({
     text,
-    userId:req.user!.id
+    userId: req.user!.id
   });
 
   return res.status(200).json({
@@ -15,4 +15,14 @@ export const analyze = asyncHandler(async (req: Request, res: Response) => {
     ...response
   })
 
+});
+
+export const textHistory = asyncHandler(async (req: Request, res: Response) => {
+  const history = await getTextAnalysisHistory(req.user!.id);
+  
+  return res.status(200).json({
+    success: false,
+    history
+  })
+  
 })
