@@ -45,7 +45,7 @@ export async function loginUser({ email, password }: LoginUserPayload) {
   }
 
 
-  const [session] = await createLoginSession(user.id);
+  const session = await createLoginSession(user.id);
   
   if (!session) {
     throw new AppError("Session creation failed", 500);

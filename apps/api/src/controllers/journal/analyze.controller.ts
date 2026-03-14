@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import { asyncHandler } from "../../utils/asyncHandler";
-import { getEmotionSummery, getTextAnalysisHistory } from "../../services/journal/analysis.service";
+import { clearTextAnalysisHistory, getEmotionSummery, getTextAnalysisHistory } from "../../services/journal/analysis.service";
 
 export const analyze = asyncHandler(async (req: Request, res: Response) => {
 
@@ -25,4 +25,11 @@ export const textHistory = asyncHandler(async (req: Request, res: Response) => {
     history
   })
   
+})
+
+export const clearTextHistory = asyncHandler(async (req: Request, res: Response) => {
+  await clearTextAnalysisHistory(req.user!.id);
+  return res.status(200).json({
+    success: true,
+  })
 })
