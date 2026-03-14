@@ -4,7 +4,11 @@ import { getEmotionSummery } from "../../services/journal/analysis.service";
 
 export const analyze = asyncHandler(async (req: Request, res: Response) => {
 
-  const response = await getEmotionSummery(req.body);
+  const { text } = req.body;
+  const response = await getEmotionSummery({
+    text,
+    userId:req.user!.id
+  });
 
   return res.status(200).json({
     success: true,
