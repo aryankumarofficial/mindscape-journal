@@ -2,5 +2,8 @@
   "name": "@repo/llm",
   "version": "0.0.1",
   "private": true,
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "groq-sdk": "^1.1.1"
+  }
 }
