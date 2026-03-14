@@ -56,7 +56,7 @@ export async function verifyUser(userId: string, verificationTokenId: string) {
       .delete(verificationToken)
       .where(eq(verificationToken.id,verificationTokenId))
     
-    return {updatedUser}
+    return {updatedUser:updatedUser!}
     
   })
 }
