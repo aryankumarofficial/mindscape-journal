@@ -26,8 +26,8 @@ router.get("/health", (_req, res) => {
 });
 
 router.use("/auth", authRoutes);
+router.post("/journal/analyze", validate(textAnalyzeSchema), analyze); // Public Route
 router.use("/journal", authMiddleware, journalRoutes);
-router.post("journal/analyze", validate(textAnalyzeSchema), analyze);
 
 
 export default router;

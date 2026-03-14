@@ -24,7 +24,7 @@ export const journalAnalysis = pgTable(
 
     summary: text("summary"),
 
-    keywords: jsonb("keywords"),
+    keywords: jsonb("keywords").$type<string[]>(),
 
     createdAt: timestamp("created_at").defaultNow()
   },

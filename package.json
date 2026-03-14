@@ -7,7 +7,13 @@
   ],
   "scripts": {
     "dev:web": "bun run --filter @repo/web dev",
-    "dev:api": "bun run --filter @repo/api dev"
+    "dev:api": "bun run --filter @repo/api dev",
+    "db:generate":"bun run --filter @repo/db db:generate",
+    "db:migrate":"bun run --filter @repo/db db:migrate",
+    "db:push":"bun run --filter @repo/db db:push",
+    "db:pull":"bun run --filter @repo/db db:pull",
+    "db:up":"bun run --filter @repo/db db:up",
+    "db:studio":"bun run --filter @repo/db db:studio"
   },
   "module": "index.ts",
   "type": "module",

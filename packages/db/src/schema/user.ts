@@ -18,8 +18,10 @@ export const users = pgTable(
     email: text("email").notNull().unique(),
     password: text("passoword").notNull(),
     isVerified: boolean("is_verified").default(false),
-    createdAt: timestamp("created_at").defaultNow(),
-    updatedAt: timestamp("updated_at").defaultNow()
+    createdAt: timestamp("created_at",{withTimezone:true}).defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .$onUpdate(()=>new Date())
   },
   (table) => ([
       index("users_email_idx").on(table.email)
