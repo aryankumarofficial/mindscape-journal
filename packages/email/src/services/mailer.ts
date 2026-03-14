@@ -48,3 +48,18 @@ export async function sendResetPasswordEmail({
     html
   })
 }
+
+
+export async function resendVerificationMail({
+  to,
+  username,
+  verificationUrl
+}: SendVerifyEmailPayload) {
+  const html = await render(VerifyEmail({ username, verificationUrl }));
+  return transporter.sendMail({
+    from: `"Mindscape" <${process.env.SMTP_USER}>`,
+    to,
+    subject: `New verification link for your Mindscape account`,
+    html
+  })
+}

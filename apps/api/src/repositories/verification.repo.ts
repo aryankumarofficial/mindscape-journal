@@ -1,4 +1,5 @@
 import { db, verificationToken } from "@repo/db/index";
+import type { VerificationInsert } from "@repo/types/user";
 import { eq } from "drizzle-orm";
 
 export async function getVerificationByUserId(userId: string) {
@@ -16,4 +17,11 @@ export async function getVerificationByUserId(userId: string) {
 
 export async function deleteToken(userId: string) {
   return db.delete(verificationToken).where(eq(verificationToken.userId, userId)).returning();
+}
+
+export async function generateVerification(data:VerificationInsert) {
+  return db
+    .insert(verificationToken)
+    .values(data)
+    .returning()
 }

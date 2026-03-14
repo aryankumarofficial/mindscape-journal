@@ -8,7 +8,7 @@ import EmailLayout from "../components/EmailLayout";
 
 interface VerifyEmailProps {
   username: string;
-  verificationUrl: string;
+  verificationUrl: string; 
 }
 
 export default function VerifyEmail({

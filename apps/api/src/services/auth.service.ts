@@ -1,20 +1,20 @@
 import type { RegisterUserPayload ,LoginUserPayload} from "@repo/types/user";
-import {sendVerifyEmail, sendWelcomeEmail} from "@repo/email/index"
+import {resendVerificationMail, sendVerifyEmail, sendWelcomeEmail} from "@repo/email/index"
 import { createUser, findUserByEmail, findUserById, verifyUser } from "../repositories/user.repo";
 import AppError from "../utils/appError";
-import { verifyHash, hashPassword } from "../utils/hash";
+import { verifyHash, hash } from "../utils/hash";
 import { signToken } from "../utils/jwt";
 import { createLoginSession } from "../repositories/session.repo";
-import type { SafeUser } from "@repo/types/db";
 import { generateSafeUser } from "../utils/user";
-import { deleteToken, getVerificationByUserId } from "../repositories/verification.repo";
+import { deleteToken, generateVerification, getVerificationByUserId } from "../repositories/verification.repo";
+import { generateToken, tokenExpiryMinutes } from "../utils/token";
 export async function registerUser(data: RegisterUserPayload) {
   const existingUser = await findUserByEmail(data.email)
   if (existingUser) {
     throw new AppError("User Already Exists",409)
   }
 
-  const password = await hashPassword(data.password);
+  const password = await hash(data.password);
   const {rowToken,user} = await createUser({
     ...data,
     password
@@ -23,7 +23,7 @@ export async function registerUser(data: RegisterUserPayload) {
   await sendVerifyEmail({
     to: user.email,
     username: user.name || `New User`,
-    verificationUrl:`${process.env.APP_URL}/verify?uid=${user.id}&token=${rowToken}`
+    verificationUrl:`${process.env.APP_URL}/auth/verify?uid=${user.id}&token=${rowToken}`
   })
 
   return generateSafeUser(user);
@@ -85,6 +85,32 @@ export async function verifyUserEmail(rowToken: string, userId: string) {
     to: updatedUser.email,
     username:updatedUser.name
   })
-  
+
   return updatedUser;
+}
+
+export async function resendVerification(userId: string,username:string,email:string) {
+  await deleteToken(userId);
+
+  const rawToken  = generateToken();
+  const tokenHash = await hash(rawToken);
+
+  const expiresAt = tokenExpiryMinutes(30);
+
+  await generateVerification({
+    userId,
+    tokenHash,
+    type: "EMAIL_VERIFY",
+    expiresAt
+  })
+
+  const verificationUrl = `${process.env.APP_URL}/auth/verify?uid=${userId}&token=${rawToken}`;
+  
+  await resendVerificationMail({
+    to: email,
+    username: username,
+    verificationUrl
+  })
+  
+
 }

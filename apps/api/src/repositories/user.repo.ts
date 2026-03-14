@@ -2,8 +2,9 @@ import { db } from "@repo/db/index";
 import { users, verificationToken } from "@repo/db/schema";
 import type { InsertUser } from "@repo/types/index"
 import argon2 from "argon2"
-import { generateToken } from "../utils/token";
+import { generateToken, tokenExpiryMinutes } from "../utils/token";
 import { eq } from "drizzle-orm"
+import { hash } from "../utils/hash";
 export async function findUserByEmail(email: string) {
   return db.query.users.findFirst({
     where:(users,{eq})=> eq(users.email,email)
@@ -15,13 +16,13 @@ return  await db.transaction(async (tx) => {
     const [user] = await tx.insert(users).values(data).returning();
 
     const rowToken = generateToken();
-    const tokenHash = await argon2.hash(rowToken);
+    const tokenHash = await hash(rowToken);
 
     await tx.insert(verificationToken).values({
       userId: user?.id!,
       tokenHash,
       type: "EMAIL_VERIFY",
-      expiresAt: new Date(Date.now() + 1000 * 60 * 30) // 30 MIN
+      expiresAt: tokenExpiryMinutes(30)
     });
 
     return {user:user!,rowToken}

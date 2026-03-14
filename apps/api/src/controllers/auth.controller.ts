@@ -1,11 +1,11 @@
 import type { Request, Response } from "express";
 import { asyncHandler } from "../utils/asyncHandler";
-import { loginUser, registerUser, verifyUserEmail } from "../services/auth.service";
+import { loginUser, registerUser, resendVerification, verifyUserEmail } from "../services/auth.service";
 import { setAuthCookies } from "../utils/cookies";
 import AppError from "../utils/appError";
 import { signToken, verifyToken } from "../utils/jwt";
 import { createLoginSession, deleteSession, findSessionByToken } from "../repositories/session.repo";
-import { findUserById } from "../repositories/user.repo";
+import { findUserByEmail, findUserById } from "../repositories/user.repo";
 
 export const register = asyncHandler(async (req: Request, res: Response) => {
   const user = await registerUser(req.body);
@@ -107,4 +107,31 @@ export const verify = asyncHandler(async (req: Request, res: Response) => {
     success: true,
     message:`Email Verified successfully`
   })
+})
+
+export const resend = asyncHandler(async (req: Request, res: Response) => {
+  const { email } = req.body;
+  const userExists = await findUserByEmail(email);
+  if (!userExists) {
+    return res.status(200).json({
+          success: true,
+          message:
+            "If an account with this email exists, a verification link has been sent."
+        });
+  }
+  if (userExists && userExists.isVerified) {
+
+    return res.status(200).json({
+      success: false,
+      message:`Account Already Verified`
+      })
+  }
+
+  await resendVerification(userExists.id, userExists.name, userExists.email);
+
+  return res.status(200).json({
+    success: true,
+    message:`Verification Link sent successfully`
+  })
+
 })
