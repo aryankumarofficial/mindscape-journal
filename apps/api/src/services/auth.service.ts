@@ -22,7 +22,7 @@ export async function registerUser(data: RegisterUserPayload) {
   await sendVerifyEmail({
     to: user?.email,
     username: user?.name || `New User`,
-    verificationUrl:`http://localhost:5000/verify/${rowToken}`
+    verificationUrl:`${process.env.APP_URL}/verify/${rowToken}`
   })
 
   return generateSafeUser(user);
@@ -45,16 +45,21 @@ export async function loginUser({ email, password }: LoginUserPayload) {
   }
 
 
-const [session]  = await createLoginSession(user.id);
+  const [session] = await createLoginSession(user.id);
+  
+  if (!session) {
+    throw new AppError("Session creation failed", 500);
+  }
 
   const accessToken = signToken({
-  id: user.id,
-})
+    id: user.id,
+    email: user.email
+  })
 
   return {
     user: generateSafeUser(user),
     accessToken,
-    refreshToken:session?.token
+    refreshToken:session.token
   }
 
 

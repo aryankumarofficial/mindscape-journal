@@ -9,7 +9,7 @@ import { createLoginSession, deleteSession, findSessionByToken } from "../reposi
 export const register = asyncHandler(async (req: Request, res: Response) => {
   const user = await registerUser(req.body);
 
-  res.status(201).json({
+ return res.status(201).json({
     success: true,
     data: user,
     message:`Account Created successfully`
@@ -40,7 +40,7 @@ export const logout =async (req: Request, res: Response) => {
   res.clearCookie("accessToken");
   res.clearCookie("refreshToken");
 
-  res.json({
+  return res.json({
     success: true
   });
 };
@@ -65,11 +65,18 @@ export const refresh = asyncHandler(async (req:Request, res:Response) => {
   
   await deleteSession(refreshToken);
   
-  const [newSession] = await createLoginSession(session.userId);
+  const userWithSession = await createLoginSession(session.userId);
   
-  const newAccessToken = signToken({ id: session.userId });
+  if (!userWithSession) {
+    throw new AppError("Session creation failed", 500);
+  }
+  
+  const newAccessToken = signToken({
+    id: userWithSession.id,
+    email:userWithSession.user.email
+  });
 
-  setAuthCookies(res, newAccessToken, newSession?.token!);
+  setAuthCookies(res, newAccessToken, userWithSession.token);
   
-  res.json({ success: true });
+ return res.json({ success: true });
 });

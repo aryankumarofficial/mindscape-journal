@@ -15,11 +15,11 @@ export function authMiddleware(
 
   try {
     const payload = verifyToken(token);
-    (req as any).user = payload;
+    req.user = payload;
     next();
   } catch{
-    return res.status(500).json({
-      message:`Invalid Token`
+    return res.status(401).json({
+      message:`Invalid or expired Token`
     })
   }
 

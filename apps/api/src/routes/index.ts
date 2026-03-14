@@ -1,6 +1,8 @@
 import { Router } from "express";
 
 import authRoutes from "./auth.routes";
+import journalRoutes from "./journal.routes";
+import { authMiddleware } from "../middlewares/auth.middleware";
 
 const router = Router();
 
@@ -21,5 +23,6 @@ router.get("/health", (_req, res) => {
 });
 
 router.use("/auth", authRoutes);
+router.use("/journal",authMiddleware,journalRoutes)
 
 export default router;
