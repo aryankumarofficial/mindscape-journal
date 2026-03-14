@@ -3,6 +3,7 @@ import { asyncHandler } from "../../utils/asyncHandler";
 import { addJournal } from "../../services/journal/entries.service";
 import AppError from "../../utils/appError";
 import { getUserJournals } from "../../repositories/journal.repo";
+import { getUserInsights } from "../../services/insight.service";
 
 export const create = asyncHandler(async (req: Request, res: Response) => {
   const { text, ambience } = req.body;
@@ -30,6 +31,21 @@ export const getEntries = asyncHandler(async (req: Request, res: Response) => {
   res.json({
     success: false,
     journals
+  })
+  
+})
+
+export const getInsights = asyncHandler(async (req: Request, res: Response) => {
+  const { userId } = req.params;
+  if (req.user!.id !== userId) {
+    throw new AppError(`Forbidden`, 403);
+  }
+  
+  const insights = await getUserInsights(userId);
+  
+  return res.status(200).json({
+    success: true,
+    insights
   })
   
 })
