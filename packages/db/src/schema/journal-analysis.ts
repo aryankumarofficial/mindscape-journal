@@ -20,13 +20,15 @@ export const journalAnalysis = pgTable(
       .notNull()
       .unique(),
 
-    emotion: text("emotion"),
+    emotion: text("emotion").notNull(),
 
-    summary: text("summary"),
+    summary: text("summary").notNull(),
 
-    keywords: jsonb("keywords").$type<string[]>(),
+    keywords: jsonb("keywords").$type<string[]>().notNull(),
 
-    createdAt: timestamp("created_at").defaultNow()
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("upated_at").defaultNow()
+      .$onUpdate(() => new Date())
   },
   (table) => ([
     index("analysis_journal_idx").on(table.journalId),

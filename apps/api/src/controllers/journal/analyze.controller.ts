@@ -1,6 +1,9 @@
 import type { Request, Response } from "express";
 import { asyncHandler } from "../../utils/asyncHandler";
-import { clearTextAnalysisHistory, getEmotionSummery, getTextAnalysisHistory } from "../../services/journal/analysis.service";
+import { clearTextAnalysisHistory, getEmotionSummery, getJournalEmotionSummery, getTextAnalysisHistory } from "../../services/journal/analysis.service";
+import { getJournalById } from "../../repositories/journal.repo";
+import AppError from "../../utils/appError";
+import { findUserByEmail } from "../../repositories/user.repo";
 
 export const analyze = asyncHandler(async (req: Request, res: Response) => {
 
@@ -19,17 +22,37 @@ export const analyze = asyncHandler(async (req: Request, res: Response) => {
 
 export const textHistory = asyncHandler(async (req: Request, res: Response) => {
   const history = await getTextAnalysisHistory(req.user!.id);
-  
+
   return res.status(200).json({
     success: false,
     history
   })
-  
+
 })
 
 export const clearTextHistory = asyncHandler(async (req: Request, res: Response) => {
   await clearTextAnalysisHistory(req.user!.id);
   return res.status(200).json({
     success: true,
+  })
+})
+
+
+export const insertJournalAnalysis = asyncHandler(async (req: Request, res: Response) => {
+  const { journalId } = req.params;
+
+
+  const journal = await getJournalById(journalId as string);
+
+
+  if (!journal || journal.userId !== req.user!.id) {
+     throw new AppError("Forbidden", 403);
+   }
+
+  const result = await getJournalEmotionSummery(journal.text, journal.id);
+
+  return res.status(200).json({
+    success: true,
+    analysis:result
   })
 })

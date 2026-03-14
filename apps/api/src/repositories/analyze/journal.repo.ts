@@ -1,5 +1,6 @@
 import { db } from "@repo/db/index";
 import { journalAnalysis, journalEntries } from "@repo/db/schema";
+import type { InsertJournalAnalysis } from "@repo/types/journal";
 import {count, desc, eq} from "drizzle-orm"
 export async function getTopEmotion(userId: string) {
   const result = await db
@@ -16,7 +17,7 @@ export async function getTopEmotion(userId: string) {
     .groupBy(journalAnalysis.emotion)
     .orderBy(desc(count()))
     .limit(1);
-  
+
   return result[0]?.emotion ?? null;
 }
 
@@ -30,6 +31,16 @@ export async function getRecentKeywords(userId: string) {
     ORDER BY ja.created_at DESC
     LIMIT 10
     `);
-  
+
   return [...new Set(result.rows.map((r)=>r.keyword))].slice(0,3)
+}
+
+export async function createJournalAnalysis(data:InsertJournalAnalysis) {
+  return db.insert(journalAnalysis).values(data).returning();
+}
+
+export async function findAnalysisById(journalId: string) {
+  return db.query.journalAnalysis.findFirst({
+    where:((ja,{eq})=>eq(ja.journalId,journalId))
+  })
 }
