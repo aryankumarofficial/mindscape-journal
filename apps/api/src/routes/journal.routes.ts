@@ -15,7 +15,6 @@ router.post("/analyze", validate(textAnalyzeSchema), analyze);
 router.get("/analyze", textHistory);
 router.delete("/analyze", clearTextHistory);
 
-router.get("/analyze/:userId/:journalId");
 router.post("/analyze/:journalId", insertJournalAnalysis);
 
 router.get("/insights/:userId", getInsights);

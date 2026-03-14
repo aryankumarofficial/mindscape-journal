@@ -18,7 +18,7 @@ export const getTextAnalysisHistory = (userId:string) => getTextHistory(userId);
 export const clearTextAnalysisHistory = (userId:string)=> clearChatHistory(userId)
 
 
-export const getJournalEmotionSummery = async (text:string,journalId:string) => {
+export const createtJournalEmotionSummery = async (text: string, journalId: string) => {
 
   const existing = await findAnalysisById(journalId);
   
@@ -38,5 +38,4 @@ export const getJournalEmotionSummery = async (text:string,journalId:string) => 
   const [result] = await createJournalAnalysis(payload);
 
   return result;
-
-}
+};

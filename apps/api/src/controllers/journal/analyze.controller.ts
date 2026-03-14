@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import { asyncHandler } from "../../utils/asyncHandler";
-import { clearTextAnalysisHistory, getEmotionSummery, getJournalEmotionSummery, getTextAnalysisHistory } from "../../services/journal/analysis.service";
+import { clearTextAnalysisHistory, getEmotionSummery, createtJournalEmotionSummery, getTextAnalysisHistory } from "../../services/journal/analysis.service";
 import { getJournalById } from "../../repositories/journal.repo";
 import AppError from "../../utils/appError";
 import { findUserByEmail } from "../../repositories/user.repo";
@@ -49,7 +49,7 @@ export const insertJournalAnalysis = asyncHandler(async (req: Request, res: Resp
      throw new AppError("Forbidden", 403);
    }
 
-  const result = await getJournalEmotionSummery(journal.text, journal.id);
+  const result = await createtJournalEmotionSummery(journal.text, journal.id);
 
   return res.status(200).json({
     success: true,
