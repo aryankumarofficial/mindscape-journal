@@ -17,15 +17,14 @@ export const journalAnalysis = pgTable(
 
     journalId: uuid("journal_id")
       .references(() => journalEntries.id)
-      .notNull(),
+      .notNull()
+      .unique(),
 
     emotion: text("emotion"),
 
     summary: text("summary"),
 
     keywords: jsonb("keywords"),
-
-    model: text("model"),
 
     createdAt: timestamp("created_at").defaultNow()
   },

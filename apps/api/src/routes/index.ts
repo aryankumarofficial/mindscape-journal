@@ -3,6 +3,9 @@ import { Router } from "express";
 import authRoutes from "./auth.routes";
 import journalRoutes from "./journal.routes";
 import { authMiddleware } from "../middlewares/auth.middleware";
+import { validate } from "../middlewares/validate.middleware";
+import { textAnalyzeSchema } from "../validators/journals/analyzer.schema";
+import { analyze } from "../controllers/journal/analyze.controller";
 
 const router = Router();
 
@@ -23,6 +26,8 @@ router.get("/health", (_req, res) => {
 });
 
 router.use("/auth", authRoutes);
-router.use("/journal",authMiddleware,journalRoutes)
+router.use("/journal", authMiddleware, journalRoutes);
+router.post("journal/analyze", validate(textAnalyzeSchema), analyze);
+
 
 export default router;
