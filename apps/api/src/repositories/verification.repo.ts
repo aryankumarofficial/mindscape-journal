@@ -25,3 +25,16 @@ export async function generateVerification(data:VerificationInsert) {
     .values(data)
     .returning()
 }
+
+export async function getVerificationById(id: string) {
+  return db
+    .query
+    .verificationToken
+    .findFirst({
+      where: ((vt, { eq, gte, and }) => and(
+        gte(vt.expiresAt, new Date()),
+        eq(vt.type, "PASSWORD_RESET"),
+        eq(vt.id, id)
+      ))
+    })
+}

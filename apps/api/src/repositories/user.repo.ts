@@ -1,5 +1,5 @@
 import { db } from "@repo/db/index";
-import { users, verificationToken } from "@repo/db/schema";
+import { session, users, verificationToken } from "@repo/db/schema";
 import type { InsertUser } from "@repo/types/index"
 import argon2 from "argon2"
 import { generateToken, tokenExpiryMinutes } from "../utils/token";
@@ -60,4 +60,25 @@ export async function verifyUser(userId: string, verificationTokenId: string) {
     return {updatedUser:updatedUser!}
     
   })
+}
+
+export async function updatePassword(userId: string, password: string,verificationTokenId:string) {
+  const res = await db
+    .transaction(async (tx) => {
+      await tx
+        .update(users)
+        .set({
+          password
+        })
+        .where(eq(users.id, userId));
+    
+      await tx
+        .delete(verificationToken)
+        .where(eq(verificationToken.id, verificationTokenId));
+    
+      await tx
+        .delete(session)
+        .where(eq(session.userId, userId));
+    
+    })
 }

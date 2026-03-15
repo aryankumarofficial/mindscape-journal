@@ -16,3 +16,10 @@ export const resendVerificationSchema = z.object({
 })
 
 export const forgotSchema = resendVerificationSchema;
+
+
+export const resetSchema = z.object({
+  uid: z.uuid({ error: `Invalid UUID` }),
+  token: z.string().min(1, { error: `token is required` }),
+  password: z.string().min(8),
+})

@@ -1,12 +1,12 @@
 import type { RegisterUserPayload ,LoginUserPayload} from "@repo/types/user";
 import {resendVerificationMail, sendResetPasswordEmail, sendVerifyEmail, sendWelcomeEmail} from "@repo/email/index"
-import { createUser, findUserByEmail, findUserById, verifyUser } from "../repositories/user.repo";
+import { createUser, findUserByEmail, findUserById, updatePassword, verifyUser } from "../repositories/user.repo";
 import AppError from "../utils/appError";
 import { verifyHash, hash } from "../utils/hash";
 import { signToken } from "../utils/jwt";
 import { createLoginSession } from "../repositories/session.repo";
 import { generateSafeUser } from "../utils/user";
-import { deleteToken, generateVerification, getVerificationByUserId } from "../repositories/verification.repo";
+import { deleteToken, generateVerification, getVerificationById, getVerificationByUserId } from "../repositories/verification.repo";
 import { generateToken, tokenExpiryMinutes } from "../utils/token";
 export async function registerUser(data: RegisterUserPayload) {
   const existingUser = await findUserByEmail(data.email)
@@ -137,5 +137,32 @@ export async function forgetPassword(email:string,userId:string,username:string)
   })
 
   return true;
+}
 
+export async function resetPassword(uid:string,token:string,newPassword:string) {
+  const [existingUser,DbToken] =   await Promise.all([
+      findUserById(uid),
+      getVerificationById(token)
+    ])
+    
+  if (!existingUser || !DbToken) {
+    throw new AppError(`Link Expired`, 400);
+  }
+  
+  const isValid = await verifyHash(token, DbToken.tokenHash);
+  
+  if (!isValid) {
+    throw new AppError(`Link Expired`, 400);
+  }
+  
+  const isSame = await verifyHash(newPassword, existingUser.password);
+  if (isSame) {
+    throw new AppError(`New password must be different`, 400); 
+  }
+  
+  const password = await hash(newPassword);
+  
+  await updatePassword(existingUser.id, password, DbToken.id);
+  
+  return true;
 }

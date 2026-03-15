@@ -1,9 +1,9 @@
 import type { Request, Response } from "express";
 import { asyncHandler } from "../utils/asyncHandler";
-import { forgetPassword, loginUser, registerUser, resendVerification, verifyUserEmail } from "../services/auth.service";
+import { forgetPassword, loginUser, registerUser, resendVerification, resetPassword, verifyUserEmail } from "../services/auth.service";
 import { setAuthCookies } from "../utils/cookies";
 import AppError from "../utils/appError";
-import { signToken, verifyToken } from "../utils/jwt";
+import { signToken } from "../utils/jwt";
 import { createLoginSession, deleteSession, findSessionByToken } from "../repositories/session.repo";
 import { findUserByEmail, findUserById } from "../repositories/user.repo";
 
@@ -137,21 +137,32 @@ export const resend = asyncHandler(async (req: Request, res: Response) => {
 
 export const forget = asyncHandler(async (req: Request, res: Response) => {
   const { email } = req.body;
-  
+
   const userExists = await findUserByEmail(email);
-  
+
   if (!userExists) {
     return res.status(200).json({
       success: false,
       message: `If an account with this email exists, a password reset link has been sent.`
     })
   }
-  
+
   await forgetPassword(userExists.email, userExists.id, userExists.name);
-  
+
   return res.status(200).json({
     success: true,
     message:`If an account with this email exists, a password reset link has been sent.`
   })
-  
+})
+
+export const reset = asyncHandler(async (req: Request, res: Response) => {
+  const { token, uid, password } = req.body;
+
+  await resetPassword(uid, token, password);
+
+  return res.status(200).json({
+    success: true,
+    message:`Password updated successfully!`
+  })
+
 })
