@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import { asyncHandler } from "../utils/asyncHandler";
-import { loginUser, registerUser, resendVerification, verifyUserEmail } from "../services/auth.service";
+import { forgetPassword, loginUser, registerUser, resendVerification, verifyUserEmail } from "../services/auth.service";
 import { setAuthCookies } from "../utils/cookies";
 import AppError from "../utils/appError";
 import { signToken, verifyToken } from "../utils/jwt";
@@ -133,5 +133,25 @@ export const resend = asyncHandler(async (req: Request, res: Response) => {
     success: true,
     message:`Verification Link sent successfully`
   })
+})
 
+export const forget = asyncHandler(async (req: Request, res: Response) => {
+  const { email } = req.body;
+  
+  const userExists = await findUserByEmail(email);
+  
+  if (!userExists) {
+    return res.status(200).json({
+      success: false,
+      message: `If an account with this email exists, a password reset link has been sent.`
+    })
+  }
+  
+  await forgetPassword(userExists.email, userExists.id, userExists.name);
+  
+  return res.status(200).json({
+    success: true,
+    message:`If an account with this email exists, a password reset link has been sent.`
+  })
+  
 })

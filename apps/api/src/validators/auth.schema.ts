@@ -14,3 +14,5 @@ export const loginSchema = z.object({
 export const resendVerificationSchema = z.object({
   email:z.email()
 })
+
+export const forgotSchema = resendVerificationSchema;

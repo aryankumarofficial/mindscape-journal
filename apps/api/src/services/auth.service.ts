@@ -1,5 +1,5 @@
 import type { RegisterUserPayload ,LoginUserPayload} from "@repo/types/user";
-import {resendVerificationMail, sendVerifyEmail, sendWelcomeEmail} from "@repo/email/index"
+import {resendVerificationMail, sendResetPasswordEmail, sendVerifyEmail, sendWelcomeEmail} from "@repo/email/index"
 import { createUser, findUserByEmail, findUserById, verifyUser } from "../repositories/user.repo";
 import AppError from "../utils/appError";
 import { verifyHash, hash } from "../utils/hash";
@@ -105,12 +105,37 @@ export async function resendVerification(userId: string,username:string,email:st
   })
 
   const verificationUrl = `${process.env.APP_URL}/auth/verify?uid=${userId}&token=${rawToken}`;
-  
+
   await resendVerificationMail({
     to: email,
     username: username,
     verificationUrl
   })
-  
+}
+
+export async function forgetPassword(email:string,userId:string,username:string) {
+
+  await deleteToken(userId);
+
+  const rawToken = generateToken();
+  const tokenHash = await hash(rawToken);
+  const expiresAt = tokenExpiryMinutes(15);
+
+  await generateVerification({
+    type: "PASSWORD_RESET",
+    userId,
+    tokenHash,
+    expiresAt
+  });
+
+  const resetUrl = `${process.env.APP_URL}/auth/reset-password?token=${rawToken}&uid=${userId}`;
+
+  await sendResetPasswordEmail({
+    resetUrl,
+    to: email,
+    username:username
+  })
+
+  return true;
 
 }
