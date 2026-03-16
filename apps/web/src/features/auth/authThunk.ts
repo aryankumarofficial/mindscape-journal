@@ -6,7 +6,7 @@ import type {
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../services/api";
 import type { SafeUser } from "@repo/types/db";
-import axios from "axios";
+import { handleApiError } from "@/utils/handleApiError";
 
 export const registerThunk = createAsyncThunk<
   SafeUser,
@@ -16,11 +16,7 @@ export const registerThunk = createAsyncThunk<
     const res = await api.post("/auth/register", data);
     return res.data.data;
   } catch (error: unknown) {
-    if (axios.isAxiosError(error)) {
-      return rejectWithValue(error.response?.data?.message ?? "Request failed");
-    }
-  
-    return rejectWithValue("Something went wrong");
+    return rejectWithValue(handleApiError(error));
   }
 });
 
@@ -32,11 +28,8 @@ export const loginUserThunk = createAsyncThunk<
     const res = await api.post("/auth/login", data);
     return res.data.data.user;
   } catch (error: unknown) {
-    if (axios.isAxiosError(error)) {
-      return rejectWithValue(error.response?.data?.message ?? "Request failed");
-    }
   
-    return rejectWithValue("Something went wrong");
+    return rejectWithValue(handleApiError(error));
   }
 });
 
@@ -47,11 +40,8 @@ export const fetchMeThunk = createAsyncThunk<
     const res = await api.get("/auth/me");
     return res.data.data;
   }catch (error: unknown) {
-    if (axios.isAxiosError(error)) {
-      return rejectWithValue(error.response?.data?.message ?? "Request failed");
-    }
   
-    return rejectWithValue("Something went wrong");
+    return rejectWithValue(handleApiError(error));
   }
 });
 
@@ -61,11 +51,8 @@ export const logoutUserThunk = createAsyncThunk(
     try {
       await api.post("/auth/logout");
     } catch (error: unknown) {
-      if (axios.isAxiosError(error)) {
-        return rejectWithValue(error.response?.data?.message ?? "Request failed");
-      }
-    
-      return rejectWithValue("Something went wrong");
+      return rejectWithValue(handleApiError(error));
+      
     }
   }
 );
