@@ -13,12 +13,14 @@ interface AuthState {
   user: SafeUser | null;
   loading: boolean;
   error: string | null;
+  isAuthenticated: boolean;
 }
 
 const initialState: AuthState = {
   user: null,
   loading: false,
   error: null,
+  isAuthenticated: false,
 };
 
 const authSlice = createSlice({
@@ -30,20 +32,26 @@ const authSlice = createSlice({
     builder
       .addCase(PURGE, (state) => {
         state.user = null;
+        state.isAuthenticated = false;
       })
 
       // LOGIN
       .addCase(loginUserThunk.pending, (state) => {
         state.loading = true;
         state.error = null;
+        state.isAuthenticated = false;
       })
       .addCase(loginUserThunk.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload;
+        if (action.payload) {
+          state.user = action.payload;
+          state.isAuthenticated = true;
+        }
       })
       .addCase(loginUserThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
+        state.isAuthenticated = false;
       })
 
       // REGISTER
@@ -76,6 +84,7 @@ const authSlice = createSlice({
       // LOGOUT
       .addCase(logoutUserThunk.fulfilled, (state) => {
         state.user = null;
+        state.isAuthenticated = false;
       });
   },
 });
