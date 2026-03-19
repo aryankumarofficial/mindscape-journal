@@ -23,7 +23,7 @@ export async function registerUser(data: RegisterUserPayload) {
   await sendVerifyEmail({
     to: user.email,
     username: user.name || `New User`,
-    verificationUrl:`${process.env.APP_URL}/auth/verify?uid=${user.id}&token=${rowToken}`
+    verificationUrl:`${process.env.NEXT_APP_URL}/auth/verify?uid=${user.id}&token=${rowToken}`
   })
 
   return generateSafeUser(user);
@@ -35,7 +35,7 @@ export async function loginUser({ email, password }: LoginUserPayload) {
     throw new AppError("Invalid Credentials",401)
   }
 
-  const valid = await verifyHash(password, user.password);
+  const valid = await verifyHash(user.password, password);
 
   if (!valid) {
     throw new AppError(`Invalid Credentials`,401)
@@ -71,9 +71,9 @@ export async function verifyUserEmail(rowToken: string, userId: string) {
   if (!verifcationRecord) {
     throw new AppError(`Invalid or Expired token`,400);
   }
+  
 
   const isValid =await verifyHash(verifcationRecord.tokenHash, rowToken);
-
   if (!isValid) {
     await deleteToken(userId);
     throw new AppError(`Invalid or Expired token`,400);
@@ -104,7 +104,7 @@ export async function resendVerification(userId: string,username:string,email:st
     expiresAt
   })
 
-  const verificationUrl = `${process.env.APP_URL}/auth/verify?uid=${userId}&token=${rawToken}`;
+  const verificationUrl = `${process.env.NEXT_APP_URL}/auth/verify?uid=${userId}&token=${rawToken}`;
 
   await resendVerificationMail({
     to: email,
@@ -128,7 +128,7 @@ export async function forgetPassword(email:string,userId:string,username:string)
     expiresAt
   });
 
-  const resetUrl = `${process.env.APP_URL}/auth/reset-password?token=${rawToken}&uid=${userId}`;
+  const resetUrl = `${process.env.NEXT_APP_URL}/auth/reset-password?token=${rawToken}&uid=${userId}`;
 
   await sendResetPasswordEmail({
     resetUrl,
@@ -144,25 +144,25 @@ export async function resetPassword(uid:string,token:string,newPassword:string) 
       findUserById(uid),
       getVerificationById(token)
     ])
-    
+
   if (!existingUser || !DbToken) {
     throw new AppError(`Link Expired`, 400);
   }
-  
+
   const isValid = await verifyHash(token, DbToken.tokenHash);
-  
+
   if (!isValid) {
     throw new AppError(`Link Expired`, 400);
   }
-  
+
   const isSame = await verifyHash(newPassword, existingUser.password);
   if (isSame) {
-    throw new AppError(`New password must be different`, 400); 
+    throw new AppError(`New password must be different`, 400);
   }
-  
+
   const password = await hash(newPassword);
-  
+
   await updatePassword(existingUser.id, password, DbToken.id);
-  
+
   return true;
 }

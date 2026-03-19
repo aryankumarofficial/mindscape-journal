@@ -103,7 +103,7 @@ export const verify = asyncHandler(async (req: Request, res: Response) => {
 
   await verifyUserEmail(token as string, uid as string);
 
-  res.json({
+ return res.json({
     success: true,
     message:`Email Verified successfully`
   })

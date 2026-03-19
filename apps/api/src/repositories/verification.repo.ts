@@ -1,6 +1,6 @@
 import { db, verificationToken } from "@repo/db/index";
 import type { VerificationInsert } from "@repo/types/user";
-import { eq } from "drizzle-orm";
+import { eq, gt } from "drizzle-orm";
 
 export async function getVerificationByUserId(userId: string) {
   return db
@@ -8,7 +8,7 @@ export async function getVerificationByUserId(userId: string) {
     .verificationToken
     .findFirst({
       where: ((vt, { eq, and, gte }) => and(
-        gte(vt.expiresAt,new Date()),
+        gt(vt.expiresAt,new Date()),
         eq(vt.userId, userId),
         eq(vt.type, "EMAIL_VERIFY"),
       )),

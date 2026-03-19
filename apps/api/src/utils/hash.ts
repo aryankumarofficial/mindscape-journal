@@ -9,6 +9,6 @@ export async function hash(row: string) {
   });
 }
 
-export async function verifyHash(password: string, hash: string) {
+export async function verifyHash(hash: string, password: string) {
   return argon2.verify(hash, password);
 }
