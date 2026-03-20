@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import { asyncHandler } from "../utils/asyncHandler";
-import { forgetPassword, loginUser, registerUser, resendVerification, resetPassword, verifyUserEmail } from "../services/auth.service";
+import { fetchUserData, forgetPassword, loginUser, registerUser, resendVerification, resetPassword, verifyUserEmail } from "../services/auth.service";
 import { setAuthCookies } from "../utils/cookies";
 import AppError from "../utils/appError";
 import { signToken } from "../utils/jwt";
@@ -164,5 +164,20 @@ export const reset = asyncHandler(async (req: Request, res: Response) => {
     success: true,
     message:`Password updated successfully!`
   })
+})
 
+export const fetchMe = asyncHandler(async (req: Request, res: Response) => {
+  const userId = req.user!.id;
+  if (!userId) {
+    throw new AppError(`Unauthorized`, 401);
+  }
+  
+  const user = await fetchUserData(userId);
+  
+  return res.status(200).json({
+    success: true,
+    message: `User Fetched successfully`,
+    data: user
+  })
+  
 })

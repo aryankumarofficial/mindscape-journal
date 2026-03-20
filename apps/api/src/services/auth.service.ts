@@ -166,3 +166,14 @@ export async function resetPassword(uid:string,token:string,newPassword:string) 
 
   return true;
 }
+
+export async function fetchUserData(userId: string) {
+  const userExists = await findUserById(userId);
+  
+  if (!userExists) {
+    throw new AppError(`Unauthorized`, 401);
+  }
+  
+  return generateSafeUser(userExists);
+  
+}

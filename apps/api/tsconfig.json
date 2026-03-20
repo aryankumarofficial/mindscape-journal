@@ -2,7 +2,10 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "types": ["node"],
-    "outDir": "dist"
+    "lib": ["ESNext"],
+    "outDir": "dist",
+    "moduleResolution": "node",
+    "module": "ESNext"
   },
-  "include": ["src"]
+  "include": ["src","../../packages"]
 }

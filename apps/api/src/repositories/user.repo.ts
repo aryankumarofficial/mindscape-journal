@@ -1,7 +1,6 @@
 import { db } from "@repo/db/index";
 import { session, users, verificationToken } from "@repo/db/schema";
 import type { InsertUser } from "@repo/types/index"
-import argon2 from "argon2"
 import { generateToken, tokenExpiryMinutes } from "../utils/token";
 import { eq } from "drizzle-orm"
 import { hash } from "../utils/hash";
