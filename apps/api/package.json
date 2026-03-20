@@ -5,8 +5,9 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "tsx watch --env-file=../../.env src/server.ts",
-    "build": "tsup src/server.ts --format esm --out-dir dist --clean",
-    "start": "node dist/server.js"
+    "build": "tsup src/server.ts --format cjs --out-dir dist --clean --minify --sourcemap --splitting false --external express,drizzle-orm,nodemailer",
+    "start": "node dist/server.cjs",
+    "start:debug": "node --enable-source-maps dist/server.cjs"
   },
   "dependencies": {
     "argon2": "^0.44.0",
@@ -15,6 +16,7 @@
     "drizzle-orm": "^0.45.1",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
+    "nodemailer": "^8.0.3",
     "nodemon": "^3.1.14",
     "pino": "^10.3.1",
     "pino-http": "^11.0.0",
