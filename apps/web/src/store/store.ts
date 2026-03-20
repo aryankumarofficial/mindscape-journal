@@ -1,6 +1,6 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import authReducer from "../features/auth/authSlice";
-import storage from "redux-persist/lib/storage";
+import storage from "./storage";
 
 import {
   persistStore,
@@ -33,7 +33,11 @@ export const store = configureStore({
   devTools: process.env.NODE_ENV !== "production",
 });
 
-export const persistor = persistStore(store);
+export let persistor: any;
+
+if (typeof window !== "undefined") {
+  persistor = persistStore(store);
+}
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

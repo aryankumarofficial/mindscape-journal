@@ -9,6 +9,6 @@
        "@repo/analytics/*": ["../../packages/analytics/src/*"],
        "@repo/llm/*": ["../../packages/llm/src/*"],
        "@repo/email/*": ["../../packages/email/src/*"]
-    }
+    },
   }
 }
