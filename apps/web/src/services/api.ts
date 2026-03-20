@@ -1,7 +1,5 @@
 import axios, { AxiosError, type AxiosRequestConfig } from "axios";
 
-console.log(`backend URL: `, process.env.NEXT_PUBLIC_API_URL);
-
  const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
   withCredentials: true,
@@ -14,7 +12,7 @@ type FailedRequest = {
   resolve: () => void;
   reject: (error: AxiosError) => void;
  }
- 
+
 let isRefreshing = false;
 let failedQueue: FailedRequest[] = [];
 
@@ -34,6 +32,12 @@ api.interceptors.response.use(
     const originalRequest = error.config as AxiosRequestConfig & {
       _retry?: boolean;
     };
+    
+    if (!error.response) return Promise.reject(error);
+    
+    if (originalRequest.url?.includes("/auth/refresh")) {
+        return Promise.reject(error);
+    }
 
     if (
       error.response?.status !== 401 ||
@@ -55,13 +59,8 @@ api.interceptors.response.use(
     isRefreshing = true;
 
     try {
-      console.log(`api  url: `, process.env.NEXT_PUBLIC_API_URL);
-      await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`,
-        {},
-        { withCredentials: true },
-      );
-      
+      await api.post(`/auth/refresh`);
+
       processQueue(null)
       return api(originalRequest);
     } catch (err) {
