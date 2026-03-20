@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 
 import routes from "./routes";
 import errorMiddleware from "./middlewares/error.middleware";
+import { httpLogger } from "./middlewares/httpLogger";
 
 const app = express();
 app.use(cors({
@@ -13,6 +14,7 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 
+app.use(httpLogger);
 
 app.use("/api", routes);
 

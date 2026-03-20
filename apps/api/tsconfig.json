@@ -5,7 +5,9 @@
     "lib": ["ESNext"],
     "outDir": "dist",
     "moduleResolution": "node",
-    "module": "ESNext"
+    "module": "ESNext",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
   },
   "include": ["src","../../packages"]
 }
