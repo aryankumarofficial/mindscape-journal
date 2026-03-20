@@ -7,7 +7,7 @@ import errorMiddleware from "./middlewares/error.middleware";
 
 const app = express();
 app.use(cors({
-  origin: `*`,
+  origin: `${process.env.ALLOWED_ORIGIN}`,
   credentials:true
 }));
 app.use(express.json());
