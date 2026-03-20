@@ -4,12 +4,11 @@
   "type": "module",
   "version": "0.0.0",
   "scripts": {
-    "dev": "bun --env-file=../../.env --watch src/server.ts",
-    "start": "bun src/server.ts"
+    "dev": "tsx watch --env-file=../../.env src/server.ts",
+    "build": "tsup src/server.ts --format esm --out-dir dist --clean",
+    "start": "node dist/server.js"
   },
   "dependencies": {
-    "@types/cors": "^2.8.19",
-    "@types/jsonwebtoken": "^9.0.10",
     "argon2": "^0.44.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
@@ -23,11 +22,14 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/cookie-parser": "^1.4.10",
     "@types/express": "^5.0.6",
     "@types/morgan": "^1.9.10",
     "@types/node": "^25.5.0",
     "ts-node": "^10.9.2",
+    "tsup": "^8.5.1",
     "tsx": "^4.21.0"
   }
 }
