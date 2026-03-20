@@ -23,7 +23,7 @@ export async function registerUser(data: RegisterUserPayload) {
   await sendVerifyEmail({
     to: user.email,
     username: user.name || `New User`,
-    verificationUrl:`${process.env.NEXT_APP_URL}/auth/verify?uid=${user.id}&token=${rowToken}`
+    verificationUrl:`${process.env.NEXT_PUBLIC_URL}/auth/verify?uid=${user.id}&token=${rowToken}`
   })
 
   return generateSafeUser(user);
@@ -104,7 +104,7 @@ export async function resendVerification(userId: string,username:string,email:st
     expiresAt
   })
 
-  const verificationUrl = `${process.env.NEXT_APP_URL}/auth/verify?uid=${userId}&token=${rawToken}`;
+  const verificationUrl = `${process.env.NEXT_PUBLIC_URL}/auth/verify?uid=${userId}&token=${rawToken}`;
 
   await resendVerificationMail({
     to: email,
@@ -128,7 +128,7 @@ export async function forgetPassword(email:string,userId:string,username:string)
     expiresAt
   });
 
-  const resetUrl = `${process.env.NEXT_APP_URL}/auth/reset-password?token=${rawToken}&uid=${userId}`;
+  const resetUrl = `${process.env.NEXT_PUBLIC_URL}/auth/reset-password?token=${rawToken}&uid=${userId}`;
 
   await sendResetPasswordEmail({
     resetUrl,

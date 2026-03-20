@@ -1,7 +1,9 @@
 import axios, { AxiosError, type AxiosRequestConfig } from "axios";
 
+console.log(`backend URL: `, process.env.NEXT_PUBLIC_API_URL);
+
  const api = axios.create({
-  baseURL: process.env.NEXT_APP_API_URL,
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
@@ -53,8 +55,9 @@ api.interceptors.response.use(
     isRefreshing = true;
 
     try {
+      console.log(`api  url: `, process.env.NEXT_PUBLIC_API_URL);
       await axios.post(
-        `${process.env.NEXT_APP_API_URL}/auth/refresh`,
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`,
         {},
         { withCredentials: true },
       );
