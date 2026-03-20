@@ -9,13 +9,18 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu"
 import Link from "next/link";
-import { useAppSelector } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { Button } from "../ui/button";
+import type { SafeUser } from "@repo/types/db";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+
+import {DropdownMenu,DropdownMenuContent,DropdownMenuItem,DropdownMenuTrigger} from "@/components/ui/dropdown-menu"
+import { logoutUserThunk } from "@/features/auth/authThunk";
+import { toast } from "sonner";
 
 
 export default function Navbar() {
-  const { isAuthenticated } = useAppSelector(state => state.auth);
-
+  const { isAuthenticated, user } = useAppSelector(state => state.auth);
   const dashboardLinks: {
     href: string;
     label: string;
@@ -29,10 +34,10 @@ export default function Navbar() {
         href: "/ai-analysis",
         label:"AI Analysis"
     }]
-  
+
   return (
-    <header className="w-full border-b bg-background">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
+    <header className="w-full border-b bg-background/80 backdrop-blur">
+      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4">
         <Link
           href="/"
           className="text-lg font-bold tracking-tight"
@@ -64,14 +69,24 @@ export default function Navbar() {
             )}
         </NavigationMenuList>
         </NavigationMenu>
-        <AuthButton isAuthenticated={isAuthenticated} />
+        <AuthButton isAuthenticated={isAuthenticated} user={user} />
       </div>
     </header>
   )
 }
 
 
-function AuthButton({isAuthenticated}:{isAuthenticated:boolean}) {
+function AuthButton({ isAuthenticated, user }: { isAuthenticated: boolean; user: SafeUser | null; }) {
+  const dispatch = useAppDispatch();
+  const handleLogout = async () => {
+    try {
+      await dispatch(logoutUserThunk());
+      toast.success("Logged out successfully");
+    } catch (error) {
+      console.log(`Err`, error);
+      toast.error((error as Error).message || `Failed to logout`);
+    }
+  }
 
   return (
     <React.Fragment>
@@ -92,9 +107,48 @@ function AuthButton({isAuthenticated}:{isAuthenticated:boolean}) {
                 </Link>
              </React.Fragment>
         ) : (
-            <Button variant={"destructive"} className="cursor-pointer">
-              Logout
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="flex items-center gap-2 rounded-full px-2 py-1 hover:bg-muted transition cursor-pointer">
+                  <Avatar>
+                    <AvatarFallback className="h-8 w-8">
+                      {user?.name?.charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="hidden sm:block text-sm font-medium">
+                    {user?.name}
+                  </span>
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <div className="px-3 py-2 text-sm text-muted-foreground">
+                  Signed in as
+                  <div className="font-medium text-foreground truncate">
+                    {user?.email}
+                  </div>
+                </div>
+
+                <DropdownMenuItem asChild>
+                  <Link className="cursor-pointer" href={"/profile"}>
+                    Profile
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link className="cursor-pointer" href="/journal">Journal</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link className="cursor-pointer" href="/ai-analysis">AI Analysis</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Button variant={"destructive"} className="w-full cursor-pointer hover:border-none hover:ring-0 focus-visible:ring-0 hover:bg-destructive! hover:text-white!"
+                    size={"sm"}
+                    onClick={handleLogout}
+                  >
+                    Logout
+                  </Button>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           )}
               </div>
 
