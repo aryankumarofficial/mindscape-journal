@@ -73,7 +73,7 @@ export const refresh = asyncHandler(async (req:Request, res:Response) => {
   }
 
   const newAccessToken = signToken({
-    id: userWithSession.id,
+    id: userWithSession.user.id,
     email:userWithSession.user.email
   });
 
@@ -171,13 +171,13 @@ export const fetchMe = asyncHandler(async (req: Request, res: Response) => {
   if (!userId) {
     throw new AppError(`Unauthorized`, 401);
   }
-  
+
   const user = await fetchUserData(userId);
-  
+
   return res.status(200).json({
     success: true,
     message: `User Fetched successfully`,
     data: user
   })
-  
+
 })

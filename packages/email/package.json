@@ -2,9 +2,8 @@
   "name": "@repo/email",
   "version": "0.0.1",
   "private": true,
-  "exports":{
-    ".":"./src/index.ts"
-  },
+  "type": "module",
+  "main": "./src/index.ts",
   "scripts": {
     "dev": "email dev --dir src/templates --port 4000",
     "build": "email build --dir src/emails"

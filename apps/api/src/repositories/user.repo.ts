@@ -1,4 +1,4 @@
-import { db } from "@repo/db/index";
+import { db } from "@repo/db";
 import { session, users, verificationToken } from "@repo/db/schema";
 import type { InsertUser } from "@repo/types/index"
 import { generateToken, tokenExpiryMinutes } from "../utils/token";

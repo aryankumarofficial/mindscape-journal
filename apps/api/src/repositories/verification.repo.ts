@@ -1,4 +1,4 @@
-import { db, verificationToken } from "@repo/db/index";
+import { db, verificationToken } from "@repo/db";
 import type { VerificationInsert } from "@repo/types/user";
 import { eq, gt } from "drizzle-orm";
 

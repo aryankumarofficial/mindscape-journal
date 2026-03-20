@@ -1,4 +1,4 @@
-import { db, textAnalysis } from "@repo/db/index";
+import { db, textAnalysis } from "@repo/db";
 import type { DeleteTextAnalysis, InsertTextAnalysis } from "@repo/types/journal";
 import {and,eq} from "drizzle-orm"
 export async function createTextHistory(data:InsertTextAnalysis) {

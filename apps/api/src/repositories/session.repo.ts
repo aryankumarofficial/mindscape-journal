@@ -1,4 +1,4 @@
-import { db } from "@repo/db/index";
+import { db } from "@repo/db";
 import { session } from "@repo/db/schema";
 import { generateToken, sessionExpiry } from "../utils/token";
 import { eq } from "drizzle-orm";

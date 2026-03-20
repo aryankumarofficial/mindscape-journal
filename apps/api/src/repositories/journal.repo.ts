@@ -1,4 +1,4 @@
-import { db, journalEntries } from "@repo/db/index";
+import { db, journalEntries } from "@repo/db";
 import type { InsertJournalEntry, UpdateJournalEntry } from "@repo/types/journal";
 import {and, count, desc, eq} from "drizzle-orm"
 

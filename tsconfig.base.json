@@ -25,6 +25,7 @@
     "baseUrl": ".",
     "paths": {
       "@repo/db/*": ["packages/db/src/*"],
+      "@repo/db": ["packages/db/src/index.ts"],
       "@repo/llm/*": ["packages/llm/src/*"],
       "@repo/analytics/*": ["packages/analytics/src/*"],
       "@repo/types/*": ["packages/types/src/*"],
