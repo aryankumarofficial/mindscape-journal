@@ -17,6 +17,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import {DropdownMenu,DropdownMenuContent,DropdownMenuItem,DropdownMenuTrigger} from "@/components/ui/dropdown-menu"
 import { logoutUserThunk } from "@/features/auth/authThunk";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 
 export default function Navbar() {
@@ -78,10 +79,14 @@ export default function Navbar() {
 
 function AuthButton({ isAuthenticated, user }: { isAuthenticated: boolean; user: SafeUser | null; }) {
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const handleLogout = async () => {
     try {
       await dispatch(logoutUserThunk());
       toast.success("Logged out successfully");
+      setTimeout(() => {
+        router.push("/login");
+      }, 100);
     } catch (error) {
       console.log(`Err`, error);
       toast.error((error as Error).message || `Failed to logout`);

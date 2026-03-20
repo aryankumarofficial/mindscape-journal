@@ -1,8 +1,9 @@
 import { NextResponse, type NextRequest } from "next/server";
 
 const protectedRoutes = [
-  "/dashboard",
+  "/profile",
   "/journal",
+  "/ai-analysis"
 ];
 
 const authRoutes = [
@@ -13,28 +14,29 @@ const authRoutes = [
 export async function proxy(request:NextRequest) {
   const token = request.cookies.get("accessToken");
   const { pathname } = request.nextUrl;
-  
+
   const isProtected = protectedRoutes.some((route) => pathname.startsWith(route));
-  
+
   const isAuthPage = authRoutes.includes(pathname);
-  
+
   if (isProtected && !token) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
   if (isAuthPage && token) {
-      return NextResponse.redirect(new URL("/dashboard", request.url));
+      return NextResponse.redirect(new URL("/profile", request.url));
   }
-  
+
   if (isAuthPage && token) {
-      return NextResponse.redirect(new URL("/dashboard", request.url));
+      return NextResponse.redirect(new URL("/profile", request.url));
   }
-  
+
 }
 
 export const config = {
   matcher: [
-    "/dashboard/:path*",
     "/journal/:path*",
+    "/profile",
+    "/ai-analysis",
     "/login",
     "/register",
   ],
