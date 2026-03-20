@@ -1,4 +1,5 @@
 "use client";
+
 import React from "react";
 import {
   NavigationMenu,
@@ -18,7 +19,8 @@ import {DropdownMenu,DropdownMenuContent,DropdownMenuItem,DropdownMenuTrigger} f
 import { logoutUserThunk } from "@/features/auth/authThunk";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-
+import { motion } from "motion/react";
+import { Brain } from "lucide-react";
 
 export default function Navbar() {
   const { isAuthenticated, user } = useAppSelector(state => state.auth);
@@ -39,11 +41,32 @@ export default function Navbar() {
   return (
     <header className="w-full border-b bg-background/80 backdrop-blur">
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4">
-        <Link
-          href="/"
-          className="text-lg font-bold tracking-tight"
-        >
-          Mindscape
+        <Link href="/" className="flex items-center gap-2 group select-none">
+          <motion.div
+            whileHover={{ rotate: 6, scale: 1.1 }}
+            whileTap={{ scale: 0.5 }}
+            transition={{ type: "spring", stiffness: 300, damping: 15 }}
+            className="h-9 w-9 rounded-xl bg-primary/10 flex items-center justify-center shadow-sm group-hover:bg-primary/20"
+          >
+            <Brain className="h-5 w-5 to-primary" />
+          </motion.div>
+        
+          <div className="flex flex-col leading-tight">
+            <motion.span
+              initial={{ opacity: 0.8 }}
+              whileHover={{ opacity: 1 }}
+              className="text-base font-semibold tracking-tight bg-linear-to-r from-foreground to-muted-foreground bg-clip-text text-transparent"
+            >
+              Mindscape
+            </motion.span>
+            <motion.span
+              initial={{ opacity: 0.6 }}
+              whileHover={{ opacity: 1 }}
+              className="text-[10px] to-muted-foreground -mt-1"
+            >
+              Journal • AI • Growth
+            </motion.span>
+          </div>
         </Link>
       <NavigationMenu>
           <NavigationMenuList>
