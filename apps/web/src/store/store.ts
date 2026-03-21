@@ -1,5 +1,6 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import authReducer from "../features/auth/authSlice";
+import journalReducer from "../features/journal/journalSlice";
 import storage from "./storage";
 
 import {
@@ -9,12 +10,13 @@ import {
 
 const rootReducer = combineReducers({
   auth: authReducer,
+  journals:journalReducer
 });
 
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["auth"], // only persist auth
+  whitelist: ["auth","journals"], // only persist auth
 };
 
 const persistedReducer = persistReducer(
