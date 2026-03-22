@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import { asyncHandler } from "../../utils/asyncHandler";
-import { addJournal } from "../../services/journal/entries.service";
+import { addJournal, getJournals } from "../../services/journal/entries.service";
 import AppError from "../../utils/appError";
 import { getUserJournals } from "../../repositories/journal.repo";
 import { getUserInsights } from "../../services/insight.service";
@@ -8,7 +8,7 @@ import { getUserInsights } from "../../services/insight.service";
 export const create = asyncHandler(async (req: Request, res: Response) => {
   const { text, ambience } = req.body;
 
-  const journal = await addJournal({
+  const [journal] = await addJournal({
     text,
     ambience,
     userId:req.user!.id,
@@ -22,17 +22,19 @@ export const create = asyncHandler(async (req: Request, res: Response) => {
 
 export const getEntries = asyncHandler(async (req: Request, res: Response) => {
   const { userId } = req.params;
+  console.log("userId", userId);
+  console.log("typeof usrid", typeof userId);
   if (req.user!.id !== userId) {
     throw new AppError(`Forbidden`, 403);
   }
-  
-  const journals = await getUserJournals(userId);
-  
+
+  const journals = await getJournals(userId);
+
   res.json({
     success: false,
     journals
   })
-  
+
 })
 
 export const getInsights = asyncHandler(async (req: Request, res: Response) => {
@@ -40,12 +42,12 @@ export const getInsights = asyncHandler(async (req: Request, res: Response) => {
   if (req.user!.id !== userId) {
     throw new AppError(`Forbidden`, 403);
   }
-  
+
   const insights = await getUserInsights(userId);
-  
+
   return res.status(200).json({
     success: true,
     insights
   })
-  
+
 })
