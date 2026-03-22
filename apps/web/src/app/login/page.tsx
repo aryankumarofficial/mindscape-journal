@@ -37,14 +37,13 @@ export default function LoginPage() {
     try {
     const res = await dispatch(loginUserThunk(values));
 
-      if (!error) toast.success("Logged in Successfully!");
+      if (loginUserThunk.fulfilled.match(res)) toast.success("Logged in Successfully!");
       setTimeout(() => {
         if (loginUserThunk.fulfilled.match(res)) {
           router.push("/profile");
         }
       }, 1000);
     } catch (error) {
-      console.log("lg err",error)
       toast.error((error as Error).message || `Failed to log in`);
     }
   };

@@ -21,14 +21,21 @@ export const addJournalThunk = createAsyncThunk<
   }
 )
 
-export const getJournalThunk = createAsyncThunk<JournalEntryData[]>(
+type GetPayload = {
+  userId:string
+}
+
+export const getJournalThunk = createAsyncThunk<
+  JournalEntryData[],
+  GetPayload
+>(
   "journal/fetch",
-  async (_, { rejectWithValue }) => {
+  async ({userId}, { rejectWithValue }) => {
     try {
-    const res = await api.get("/journal");
+    const res = await api.get(`/journal/${userId}`);
     return res.data.journals;
     } catch (error: unknown) {
-      return rejectWithValue(error);
+      return rejectWithValue(handleApiError(error));
     }
   }
 )

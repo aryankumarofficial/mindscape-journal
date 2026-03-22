@@ -21,13 +21,13 @@ const pool = new Pool({
 
 export const db = drizzle(pool, {
   schema,
-  logger: process.env.NODE_ENV!=="production"? {
-    logQuery(query, params) {
-      console.log("\n🟦 DRIZZLE QUERY");
-      console.log("SQL:", query);
-      console.log("PARAMS:", params);
-    }
-  }:false
+  // logger: process.env.NODE_ENV!=="production"? {
+  //   logQuery(query, params) {
+  //     console.log("\n🟦 DRIZZLE QUERY");
+  //     console.log("SQL:", query);
+  //     console.log("PARAMS:", params);
+  //   }
+  // }:false
 })
 
 export * from "./schema"

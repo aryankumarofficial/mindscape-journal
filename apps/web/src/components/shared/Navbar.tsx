@@ -50,7 +50,7 @@ export default function Navbar() {
           >
             <Brain className="h-5 w-5 to-primary" />
           </motion.div>
-        
+
           <div className="flex flex-col leading-tight">
             <motion.span
               initial={{ opacity: 0.8 }}

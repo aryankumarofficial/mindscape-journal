@@ -18,11 +18,19 @@ const initialState: JournalState = {
 const journalSlice = createSlice({
   name: "journal",
   initialState,
-  reducers: {},
+  reducers: {
+    clearError: (state) => {
+      state.error = null;
+    },
+    clearJournals: (state) => {
+      state.journals = [];
+    }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(PURGE, (state) => {
         state.journals = [];
+        state.error = null;
       })
 
       // Add journal
@@ -58,3 +66,5 @@ const journalSlice = createSlice({
 });
 
 export default journalSlice.reducer;
+
+export const { clearError, clearJournals } = journalSlice.actions;
