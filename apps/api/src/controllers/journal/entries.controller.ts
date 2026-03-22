@@ -51,8 +51,17 @@ export const getInsights = asyncHandler(async (req: Request, res: Response) => {
 })
 
 export const removeJournal = asyncHandler(async (req: Request, res: Response) => {
-  const { userId } = req.params;
+  const { journalId } = req.params;
   
-  await deleteJournal(userId as string);
-  
+  if (!journalId) {
+    throw new AppError(`Journal Id must be required`, 400);
+  }
+
+  const response = await deleteJournal(journalId as string);
+
+  return res.status(200).json({
+    success: false,
+    data: response,
+    message: `Journal With ID: ${response.id} deleted Successfully`
+  });
 })

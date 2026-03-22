@@ -5,4 +5,10 @@ export const addJournal = (data: InsertJournalEntry) => createJournal(data);
 
 export const getJournals = (userId: string) => getUserJournals(userId);
 
-export const deleteJournal = (userId: string) => deleteJournalById(userId);
+export const deleteJournal = async (journalId: string) => {
+  const [deletedJournal] = await deleteJournalById(journalId);
+  return {
+    id: deletedJournal?.id,
+    userId: deletedJournal?.userId
+  }
+}
