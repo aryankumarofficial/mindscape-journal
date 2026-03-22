@@ -10,3 +10,9 @@ export type UpdateJournalEntry = {
   userId: string;
   id: string;
 } & RequireAtLeastOne<Pick<InsertJournalEntry,"text" | "ambience">>
+
+export type DeleteJournalPayload = Required<Pick<InsertJournalEntry, "id">>;
+export type DeleteJournalResponse = {
+  id: string;
+  userId: string;
+}

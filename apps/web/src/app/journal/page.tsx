@@ -1,17 +1,17 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger} from "@/components/ui/dialog";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTrigger} from "@/components/ui/dialog";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupTextarea } from "@/components/ui/input-group";
 import { clearError } from "@/features/journal/journalSlice";
-import { addJournalThunk, getJournalThunk } from "@/features/journal/journalThunk";
+import { addJournalThunk, deleteJournalThunk, getJournalThunk } from "@/features/journal/journalThunk";
 import { cn } from "@/lib/utils";
 import { journalSchema, type Journal } from "@/lib/validators/journal.schema";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Leaf, Loader2, PenLine, RefreshCcw } from "lucide-react";
+import { Leaf, Loader2, PenLine, RefreshCcw, Trash2 } from "lucide-react";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -27,15 +27,15 @@ export default function JournalPage() {
       dispatch(clearError());
     }
   }, [error, dispatch])
-  
-  
+
+
   useEffect(() => {
     return () => {
       dispatch(clearError())
     }
   }, [dispatch])
 
-  
+
   const form = useForm<Journal>({
     resolver: zodResolver(journalSchema),
     defaultValues: {
@@ -69,13 +69,29 @@ export default function JournalPage() {
       toast.error((error as Error)?.message || `Failed to fetch journal`);
     }
   }
-  
+
+  const deleteJournal = async (journalId: string) => {
+    try {
+      await dispatch(deleteJournalThunk({
+        id:journalId
+      }))
+        .unwrap()
+        .catch(() => {
+          dispatch(getJournalThunk({ userId: user?.id || "" }))
+        })
+      toast.success(`Journal Deleted successfully`);
+    } catch (error) {
+      toast.error((error as Error).message || `Failed to delete Journal`);
+    }
+  }
+
   return (
     <section className="max-w-5xl mx-auto py-10 px-4">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-bold">
           Your journals
         </h1>
+        <div className="flex justify-center items-center flex-row gap-4">
         <Dialog>
           <DialogTrigger asChild>
             <Button className="cursor-pointer text-3xl p-4 py-6" size={"lg"}>Add Journal</Button>
@@ -140,8 +156,11 @@ export default function JournalPage() {
                     )}
                   </Field>
                 )}
-              />
-              <Button disabled={form.formState.isSubmitting || !form.formState.isValid} type="submit" className="capitalize font-bold tracking-wide self-end w-full cursor-pointer">
+                />
+                <DialogClose disabled={form.formState.isSubmitting || !form.formState.isValid} type="submit" className={cn(
+                  buttonVariants({ variant: "default", size: "default" }),
+                  `capitalize font-bold tracking-wide self-end w-full cursor-pointer`
+                )}>
                 {form.formState.isSubmitting
                   ? <span className="flex flex-row gap-2 items-center justify-center">
                     <Loader2 size={25} className="animate-spin" />
@@ -151,7 +170,7 @@ export default function JournalPage() {
                     Log Journal
                   </span>
                 }
-              </Button>
+                </DialogClose>
             </form>
           </DialogContent>
         </Dialog>
@@ -163,7 +182,8 @@ export default function JournalPage() {
           <RefreshCcw
             className={cn(loading && "animate-spin")}
           />
-        </Button>
+          </Button>
+        </div>
       </div>
 
       {loading
@@ -191,11 +211,16 @@ export default function JournalPage() {
                     {journal.text}
                   </CardDescription>
                 </CardContent>
+                <CardFooter className="justify-end">
+                  <Button variant={"destructive"} className="cursor-pointer" onClick={async () => await deleteJournal(journal.id)}>
+                    <Trash2 />
+                  </Button>
+                </CardFooter>
               </Card>
             ))}
           </div>
         )}
-      
+
     </section>
   )
 }
