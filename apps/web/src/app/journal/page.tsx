@@ -54,6 +54,8 @@ export default function JournalPage() {
       }
     } catch (error) {
       toast.error((error as Error)?.message || `Failed to add journal`);
+    } finally {
+      form.reset();
     }
   }
 
@@ -67,7 +69,7 @@ export default function JournalPage() {
       toast.error((error as Error)?.message || `Failed to fetch journal`);
     }
   }
-
+  
   return (
     <section className="max-w-5xl mx-auto py-10 px-4">
       <div className="flex justify-between items-center mb-8">
@@ -164,8 +166,13 @@ export default function JournalPage() {
         </Button>
       </div>
 
-      {journals.length === 0
+      {loading
         ? (
+          <section className="flex flex-col justify-center items-center">
+            <Loader2 size={100} className="animate-spin" />
+          </section>
+        )
+        :journals.length === 0 ? (
           <p>
             No Journals yet. Start by adding one
           </p>
@@ -187,10 +194,8 @@ export default function JournalPage() {
               </Card>
             ))}
           </div>
-        )
-
-      }
-
+        )}
+      
     </section>
   )
 }
