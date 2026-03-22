@@ -19,7 +19,7 @@ export async function getUserJournals(userId: string) {
   })
 }
 
-export async function deleteJournal(journalId: string) {
+export async function deleteJournalById(journalId: string) {
   return db.delete(journalEntries).where(eq(journalEntries.id, journalId)).returning();
 }
 

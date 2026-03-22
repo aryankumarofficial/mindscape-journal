@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import { asyncHandler } from "../../utils/asyncHandler";
-import { addJournal, getJournals } from "../../services/journal/entries.service";
+import { addJournal, deleteJournal, getJournals } from "../../services/journal/entries.service";
 import AppError from "../../utils/appError";
 import { getUserJournals } from "../../repositories/journal.repo";
 import { getUserInsights } from "../../services/insight.service";
@@ -34,7 +34,6 @@ export const getEntries = asyncHandler(async (req: Request, res: Response) => {
     success: false,
     journals
   })
-
 })
 
 export const getInsights = asyncHandler(async (req: Request, res: Response) => {
@@ -49,5 +48,11 @@ export const getInsights = asyncHandler(async (req: Request, res: Response) => {
     success: true,
     insights
   })
+})
 
+export const removeJournal = asyncHandler(async (req: Request, res: Response) => {
+  const { userId } = req.params;
+  
+  await deleteJournal(userId as string);
+  
 })

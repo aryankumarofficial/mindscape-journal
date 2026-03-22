@@ -1,12 +1,14 @@
 import { Router } from "express";
 import { validate } from "../middlewares/validate.middleware";
 import { createJournalSchema } from "../validators/journals/entries.schema";
-import { create, getEntries, getInsights } from "../controllers/journal/entries.controller";
+import { create, getEntries, getInsights, removeJournal } from "../controllers/journal/entries.controller";
 import { textAnalyzeSchema } from "../validators/journals/analyzer.schema";
 import { analyze, clearTextHistory, insertJournalAnalysis, textHistory } from "../controllers/journal/analyze.controller";
 const router = Router();
 
 router.post("/", validate(createJournalSchema), create);
+
+router.delete("/:journalId", removeJournal);
 
 router.get("/:userId", getEntries);
 
